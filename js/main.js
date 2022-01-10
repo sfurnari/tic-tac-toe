@@ -1,5 +1,7 @@
 console.log('js loaded')
 
+let liveGame = true;
+
 let currentGame = ["", "", "", "", "", "", "", "", ""]
 const winConditions = [
     [0, 1, 2],
@@ -16,12 +18,21 @@ const player1 = 'X';
 const player2 = 'O';
 let currentPlayer = player1;
 
-let xWins = 0;
-let oWins = 0;
+let player1Wins = 0;
+let player2Wins = 0;
 
+
+const newGame = function(){
+    liveGame = true;
+    currentPlayer = player1;
+    currentGame = ["", "", "", "", "", "", "", "", ""];
+    $('*.square').text("");
+}
 
 const winCheck = function(){
     let gameWon = false;
+    let gameResultMessage = $('.game-result')
+
     for (let i = 0; i < winConditions.length; i++) { // loops through array of win conditions
 
         const isWin = winConditions[i]; // ---
@@ -36,9 +47,22 @@ const winCheck = function(){
             gameWon = true;
         }
     }
-    if (gameWon) {
-        $('.game-status').text(`${currentPlayer} wins!!!`)
+    if (gameWon) {        
+        liveGame = false
+        gameResultMessage.text(`${currentPlayer} wins!!!`)
+        if (currentPlayer === player1){
+            player1Wins++
+            $('#player1-wins').text(`Player 1 wins: ${player1Wins}`)
+        } else {
+            player2Wins++
+            $('#player2-wins').text(`Player 2 wins: ${player2Wins}`)
+        }
+    } // if game is won, update win counter and display in ui
+
+    if (!currentGame.includes("")){ // game results in a draw
+        gameResultMessage.text("Game is a draw")
     }
+
 };
 
 const playerChange = function(){
@@ -51,19 +75,24 @@ const playerChange = function(){
 
 $('.square').on('click', function(e){
      const id = e.target.id;
-
- //_________Is square already clicked?__________   
-    if($('#' + id).text() != ""){
-        return;
+     
+    if (liveGame){ // is game live?
+      
+        if ($('#' + id).text() != ""){ // has square already been clicked?
+            return;
+            }
+    
+        if (currentPlayer === player1){ // players turn input
+            $('#' + id).text('x');
+        } else {
+            $('#' + id).text('o')
+        }
+        currentGame[Number(id)] = currentPlayer
+        winCheck();
+        playerChange();
     }
-// _________Player Input____________
-    if (currentPlayer === player1){
-        $('#' + id).text('x');
-    } else {
-        $('#' + id).text('o')
-    }
-    currentGame[Number(id)] = currentPlayer
-    winCheck();
-    playerChange();
-    console.log(currentGame)
 });
+
+$('#new-game').on('click', function (){
+    newGame();
+})
