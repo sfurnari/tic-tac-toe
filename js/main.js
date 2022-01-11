@@ -14,8 +14,8 @@ const winConditions = [
     [2, 4, 6]
 ];
 
-const player1 = "x";
-const player2 = "o";
+const player1 = "Player 1 ( X )";
+const player2 = "Player 2 ( O )";
 let currentPlayer = player1;
 let player1Wins = 0;
 let player2Wins = 0;
@@ -30,7 +30,12 @@ const playerChange = function(){
 
 const winCheck = function(){
     let gameWon = false;
-    let $gameResultMessage = $('.game-result')
+    let $gameResultMessage = $('#game-result')
+    const openModal = function (){
+        $('.modal').css('display', 'block');
+        $('.modal-content').css('display', 'block');
+    }
+    
 
     for (let i = 0; i < winConditions.length; i++) { // loops through array of win conditions
         const isWin = winConditions[i];         // ---
@@ -46,21 +51,26 @@ const winCheck = function(){
             gameWon = true;
         }
     }
-    if (gameWon) {        
+    if (gameWon) {  // if game is won, update win counter and display in ui      
         liveGame = false
-        $gameResultMessage.text(`${currentPlayer} wins!!!`).fadeIn(100).fadeOut(3000)
+        $gameResultMessage.text(`${currentPlayer} wins!`)
         if (currentPlayer === player1){
             player1Wins++
             $('#player1-wins').text(`Player 1 wins: ${player1Wins}`)
+            openModal()
         } else {
             player2Wins++
             $('#player2-wins').text(`Player 2 wins: ${player2Wins}`)
+            openModal()
         }
-    } // if game is won, update win counter and display in ui
+    } 
 
-    if (!currentGame.includes("")){ // if game results in a draw
-        $gameResultMessage.text("Game is a draw").fadeIn(100).fadeOut(3000)
+    if (!gameWon && !currentGame.includes("")){ // if game results in a draw
+        liveGame = false
+        $gameResultMessage.text("Game is a draw")
+        openModal()
     };
+
 };
 
 const newGame = function(){
@@ -69,6 +79,11 @@ const newGame = function(){
     currentGame = ["", "", "", "", "", "", "", "", ""];
     $('*.square').text("");
 };
+
+const closeModal = function(){
+    $('.modal').css('display', 'none');
+    $('.modal-content').css('display', 'none');
+}
 
 $('.square').on('click', function(e){
      const id = e.target.id;
@@ -90,6 +105,24 @@ $('.square').on('click', function(e){
     }
 });
 
-$('#new-game').on('click', function (){
+$('#new-game-yes').on('click', function (){
+    closeModal();
     newGame();
-})
+});
+
+$('#new-game-no').on('click', function(){
+    $('.modal').css('display', 'none');
+    $('.modal-content').css('display', 'none');
+});
+
+$('#reset-game').on('click', function(){
+    $('#player1-wins').text('Player 1 wins: 0')
+    $('#player2-wins').text('Player 2 wins: 0')
+    player1Wins = 0;
+    player2Wins = 0;
+    newGame()
+});
+
+$('#newgame').on('click', function(){
+    newGame()
+});
