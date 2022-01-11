@@ -1,8 +1,8 @@
 console.log('js loaded')
 
 let liveGame = true;
-
 let currentGame = ["", "", "", "", "", "", "", "", ""]
+
 const winConditions = [
     [0, 1, 2],
     [3, 4, 5],
@@ -14,42 +14,41 @@ const winConditions = [
     [2, 4, 6]
 ];
 
-const player1 = 'X';
-const player2 = 'O';
+const player1 = "x";
+const player2 = "o";
 let currentPlayer = player1;
-
 let player1Wins = 0;
 let player2Wins = 0;
 
-
-const newGame = function(){
-    liveGame = true;
-    currentPlayer = player1;
-    currentGame = ["", "", "", "", "", "", "", "", ""];
-    $('*.square').text("");
-}
+const playerChange = function(){
+    if(currentPlayer === player1){
+        currentPlayer = player2;
+    } else {
+        currentPlayer = player1;
+    }
+};
 
 const winCheck = function(){
     let gameWon = false;
-    let gameResultMessage = $('.game-result')
+    let $gameResultMessage = $('.game-result')
 
     for (let i = 0; i < winConditions.length; i++) { // loops through array of win conditions
+        const isWin = winConditions[i];         // ---
+                                                //    |
+        let winIndex0 = currentGame[isWin[0]];  //    |    assigns variable to each index of win condition [0, 1, 2]
+        let winIndex1 = currentGame[isWin[1]];  //    |--- to match with current game status.
+        let winIndex2 = currentGame[isWin[2]];  // ___|
 
-        const isWin = winConditions[i]; // ---
-        let a = currentGame[isWin[0]];  //    |    assigns variable to each index of win condition [0, 1, 2]
-        let b = currentGame[isWin[1]];  //    |--- to match with current game status.
-        let c = currentGame[isWin[2]];  // ___|
-
-        if (a === "" || b === "" || c === "") { // if any game squares haven't been clicked, continue through the loop
+        if (winIndex0 === "" || winIndex1 === "" || winIndex2 === "") { // if any game squares haven't been clicked, continue through the loop
             continue;
         }        
-        if (a === b && b === c){ // matched win condition in array of current game
+        if (winIndex0 === winIndex1 && winIndex1 === winIndex2){ // matched win condition in currentGame array
             gameWon = true;
         }
     }
     if (gameWon) {        
         liveGame = false
-        gameResultMessage.text(`${currentPlayer} wins!!!`)
+        $gameResultMessage.text(`${currentPlayer} wins!!!`).fadeIn(100).fadeOut(3000)
         if (currentPlayer === player1){
             player1Wins++
             $('#player1-wins').text(`Player 1 wins: ${player1Wins}`)
@@ -59,18 +58,16 @@ const winCheck = function(){
         }
     } // if game is won, update win counter and display in ui
 
-    if (!currentGame.includes("")){ // game results in a draw
-        gameResultMessage.text("Game is a draw")
-    }
-
+    if (!currentGame.includes("")){ // if game results in a draw
+        $gameResultMessage.text("Game is a draw").fadeIn(100).fadeOut(3000)
+    };
 };
 
-const playerChange = function(){
-    if(currentPlayer === player1){
-        currentPlayer = player2;
-    } else {
-        currentPlayer = player1;
-    }
+const newGame = function(){
+    liveGame = true;
+    currentPlayer = player1;
+    currentGame = ["", "", "", "", "", "", "", "", ""];
+    $('*.square').text("");
 };
 
 $('.square').on('click', function(e){
