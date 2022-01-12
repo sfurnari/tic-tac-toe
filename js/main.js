@@ -1,6 +1,7 @@
 console.log('js loaded')
 
 let liveGame = true;
+let cpuGame = false;
 let currentGame = ["", "", "", "", "", "", "", "", ""]
 
 const winConditions = [
@@ -22,7 +23,6 @@ let player2Wins = 0;
 
 
 const cpuChooses = function(){
-    // debugger;
     if(liveGame){
         const getRandomNum = function(){
         return Math.floor(Math.random() * currentGame.length);
@@ -33,14 +33,11 @@ const cpuChooses = function(){
             currentGame[randomNum] = player2;
             $('#' + randomNum).text('o');
             winCheck();
-            currentPlayer = player1
-            
+            currentPlayer = player1    
         } else {
             cpuChooses();
         };
     }
-
-
 }; // cpuChooses()
 
 const playerChange = function(){
@@ -103,6 +100,14 @@ const newGame = function(){
     $('*.square').text("");
 };
 
+const resetGame = function(){
+    $('#player1-wins').text('Player 1 [X] wins: 0')
+    $('#player2-wins').text('Player 2 [O] wins: 0')
+    player1Wins = 0;
+    player2Wins = 0;
+    newGame();
+};
+
 const closeModal = function(){
     $('.modal').css('display', 'none');
     $('.modal-content').css('display', 'none');
@@ -110,9 +115,9 @@ const closeModal = function(){
 
 $('.square').on('click', function(e){
     const id = e.target.id;
+    const playGame = function(){
+        if (liveGame){ // is game live?
 
-    if (liveGame){ // is game live?
-        
         if ($('#' + id).text() != ""){ // has square already been clicked?
             return;
         }
@@ -125,11 +130,15 @@ $('.square').on('click', function(e){
         currentGame[Number(id)] = currentPlayer;
         winCheck();
         playerChange();
+    }
+    
+    }
+    if(cpuGame){
+        playGame();
         cpuChooses();
-        
-        console.log(currentGame)
-        console.log(currentPlayer)
 
+    } else {
+        playGame()
     }
 });
 
@@ -144,13 +153,15 @@ $('#new-game-no').on('click', function(){
 });
 
 $('#reset-game').on('click', function(){
-    $('#player1-wins').text('Player 1 wins: 0')
-    $('#player2-wins').text('Player 2 wins: 0')
-    player1Wins = 0;
-    player2Wins = 0;
-    newGame()
+    resetGame()
 });
 
-$('#newgame').on('click', function(){
-    newGame()
+$('#play-human').on('click', function(){
+    resetGame();
+    cpuGame = false
+});
+
+$('#play-computer').on('click', function(){
+    resetGame();
+    cpuGame = true;
 });
