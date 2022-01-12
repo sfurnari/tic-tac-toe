@@ -14,11 +14,34 @@ const winConditions = [
     [2, 4, 6]
 ];
 
-const player1 = "Player 1 ( X )";
-const player2 = "Player 2 ( O )";
+const player1 = "X";
+const player2 = "O";
 let currentPlayer = player1;
 let player1Wins = 0;
 let player2Wins = 0;
+
+
+const cpuChooses = function(){
+    // debugger;
+    if(liveGame){
+        const getRandomNum = function(){
+        return Math.floor(Math.random() * currentGame.length);
+        }; 
+        currentPlayer = player2;
+        const randomNum = getRandomNum()
+        if (currentGame[randomNum] === ""){
+            currentGame[randomNum] = player2;
+            $('#' + randomNum).text('o');
+            winCheck();
+            currentPlayer = player1
+            
+        } else {
+            cpuChooses();
+        };
+    }
+
+
+}; // cpuChooses()
 
 const playerChange = function(){
     if(currentPlayer === player1){
@@ -40,27 +63,27 @@ const winCheck = function(){
     for (let i = 0; i < winConditions.length; i++) { // loops through array of win conditions
         const isWin = winConditions[i];         // ---
                                                 //    |
-        let winIndex0 = currentGame[isWin[0]];  //    |    assigns variable to each index of win condition [0, 1, 2]
+        let winIndex0 = currentGame[isWin[0]];  //    |    assigns variable to each index of the nested win conditions [0, 1, 2]
         let winIndex1 = currentGame[isWin[1]];  //    |--- to match with current game status.
         let winIndex2 = currentGame[isWin[2]];  // ___|
 
         if (winIndex0 === "" || winIndex1 === "" || winIndex2 === "") { // if any game squares haven't been clicked, continue through the loop
             continue;
         }        
-        if (winIndex0 === winIndex1 && winIndex1 === winIndex2){ // matched win condition in currentGame array
+        if (winIndex0 === winIndex1 && winIndex1 === winIndex2){ // matched win condition in currentGame nested array
             gameWon = true;
         }
     }
-    if (gameWon) {  // if game is won, update win counter and display in ui      
+    if (gameWon) {  // if game is won, update win counter and display      
         liveGame = false
         $gameResultMessage.text(`${currentPlayer} wins!`)
         if (currentPlayer === player1){
             player1Wins++
-            $('#player1-wins').text(`Player 1 wins: ${player1Wins}`)
+            $('#player1-wins').text(`Player 1 [X] wins: ${player1Wins}`)
             openModal()
         } else {
             player2Wins++
-            $('#player2-wins').text(`Player 2 wins: ${player2Wins}`)
+            $('#player2-wins').text(`Player 2 [O] wins: ${player2Wins}`)
             openModal()
         }
     } 
@@ -86,22 +109,27 @@ const closeModal = function(){
 }
 
 $('.square').on('click', function(e){
-     const id = e.target.id;
-     
+    const id = e.target.id;
+
     if (liveGame){ // is game live?
-      
+        
         if ($('#' + id).text() != ""){ // has square already been clicked?
             return;
-            }
-    
+        }
+
         if (currentPlayer === player1){ // players turn input
             $('#' + id).text('x');
         } else {
             $('#' + id).text('o')
         }
-        currentGame[Number(id)] = currentPlayer
+        currentGame[Number(id)] = currentPlayer;
         winCheck();
         playerChange();
+        cpuChooses();
+        
+        console.log(currentGame)
+        console.log(currentPlayer)
+
     }
 });
 
