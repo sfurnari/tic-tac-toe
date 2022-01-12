@@ -15,8 +15,8 @@ const winConditions = [
     [2, 4, 6]
 ];
 
-const player1 = 'X';
-const player2 = 'O';
+const player1 = 'x';
+const player2 = 'o';
 let currentPlayer = player1;
 let player1Wins = 0;
 let player2Wins = 0;
@@ -28,15 +28,14 @@ const cpuChooses = function(){
         const randomNum = Math.floor(Math.random() * currentGame.length);
         if (currentGame[randomNum] === ''){
             currentGame[randomNum] = player2;
-            $('#' + randomNum).text('o');
-            localStorage.setItem(`square${randomNum}`, `${currentGame[randomNum]}`)
+            $(`#${randomNum}`).text('o');
             winCheck();
             currentPlayer = player1    
         } else {
             cpuChooses();
         };
     }
-}; // cpuChooses()
+}; // cpuChooses() - dumb random ai
 
 const playerChange = function(){
     if(currentPlayer === player1){
@@ -44,7 +43,7 @@ const playerChange = function(){
     } else {
         currentPlayer = player1;
     }
-};
+}; // playerChange() - changes player after turn made
 
 const winCheck = function(){
     let gameWon = false;
@@ -74,11 +73,11 @@ const winCheck = function(){
         $gameResultMessage.text(`${currentPlayer} wins!`)
         if (currentPlayer === player1){
             player1Wins++
-            $('#player1-wins').text(`Player 1 [X] wins: ${player1Wins}`)
+            $('#player1-wins').text(`[X] wins: ${player1Wins}`)
             openModal()
         } else {
             player2Wins++
-            $('#player2-wins').text(`Player 2 [O] wins: ${player2Wins}`)
+            $('#player2-wins').text(`[O] wins: ${player2Wins}`)
             openModal()
         }
     } 
@@ -89,27 +88,27 @@ const winCheck = function(){
         openModal()
     };
 
-};
+}; // winCheck() -  checks for win or draw
 
 const newGame = function(){
     liveGame = true;
     currentPlayer = player1;
     currentGame = ['', '', '', '', '', '', '', '', ''];
     $('*.square').text('');
-};
+}; // newGame() - sets game to turn 1
 
 const resetGame = function(){
-    $('#player1-wins').text('Player 1 [X] wins: 0')
-    $('#player2-wins').text('Player 2 [O] wins: 0')
+    $('#player1-wins').text('[X] wins: 0')
+    $('#player2-wins').text('[O] wins: 0')
     player1Wins = 0;
     player2Wins = 0;
     newGame();
-};
+}; // resetGame() - resets game & score
 
 const closeModal = function(){
     $('.modal').css('display', 'none');
     $('.modal-content').css('display', 'none');
-}
+}; // closeModal() - closes modal pop up
 
 const storeLocalData = function(){
     localStorage.setItem('player1wins', `${player1Wins}`);
@@ -118,7 +117,7 @@ const storeLocalData = function(){
     localStorage.setItem('liveGame', `${liveGame}`)
     localStorage.setItem('cpuGame', `${cpuGame}`)
     localStorage.setItem('currentPlayer', `${currentPlayer}`)  
-};
+}; // storeLocalData() - stores current game data
 
 const restoreLocalData = function(){  
     player1Wins = parseInt(localStorage.getItem('player1wins'));
@@ -134,22 +133,12 @@ const restoreLocalData = function(){
     cpuGame = JSON.parse(localStorage.getItem('cpuGame'));
 
     currentPlayer = localStorage.getItem('currentPlayer');
-   
-    
-};
 
-const removeBoardLocalData = function(){
-    localStorage.removeItem('currentGame')
-    localStorage.removeItem('square0')
-    localStorage.removeItem('square1')
-    localStorage.removeItem('square2')
-    localStorage.removeItem('square3')
-    localStorage.removeItem('square4')
-    localStorage.removeItem('square5')
-    localStorage.removeItem('square6')
-    localStorage.removeItem('square7')
-    localStorage.removeItem('square8')
-}
+    for (let i = 0; i < currentGame.length; i++) {
+        const boardPos = currentGame[i];
+        $(`#${i}`).text(currentGame[i])   
+    } 
+}; // restoreLocalData() - restores local game data
 
 $('.square').on('click', function(e){
     const id = e.target.id;
@@ -157,56 +146,58 @@ $('.square').on('click', function(e){
     const playGame = function(){
         if (liveGame){ // is game live?
 
-        if ($('#' + id).text() != ''){ // has square already been clicked?
+        if ($(`#${id}`).text() != ''){ // has square already been clicked?
             return;
         }
 
         if (currentPlayer === player1){ // players turn input
-            $('#' + id).text('x');          
+            $(`#${id}`).text('x');          
         } else {
-            $('#' + id).text('o')     
+            $(`#${id}`).text('o')     
         }
         currentGame[idNum] = currentPlayer;
         winCheck();
         playerChange();
-    }
-    
+        }
     }
     if(cpuGame){
         playGame();
-        localStorage.setItem(`square${idNum}`, `${currentGame[idNum]}`)
         cpuChooses();
 
     } else {
         playGame();
-        localStorage.setItem(`square${idNum}`, `${currentGame[idNum]}`)
     }
     storeLocalData();
 }); // game is played here
 
+$('#new-game').on('click', function(){
+    newGame();
+}); // main menu new game
+
 $('#new-game-yes').on('click', function (){
     closeModal();
     newGame();
-    removeBoardLocalData();
-});
+}); // modal yes button
 
 $('#new-game-no').on('click', function(){
     closeModal();
-});
+}); // modal no button
 
 $('#reset-game').on('click', function(){
     resetGame()
     localStorage.clear()
-});
+}); // reset button
 
 $('#play-human').on('click', function(){
     resetGame();
-    removeBoardLocalData();
     cpuGame = false
-});
+}); // play human button
 
 $('#play-computer').on('click', function(){
     resetGame();
-    removeBoardLocalData();
     cpuGame = true;
+});// play computer button
+
+$('#restore').on('click', function(){
+    restoreLocalData();
 });
