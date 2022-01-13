@@ -22,6 +22,7 @@ The live game state is stored in Local Storage which can be retrieved at a later
 
 ## **Future Updates**
 Future updates will include -
+- Personalize player names
 - Ability to change player tokens (X, O)
 - Networked Multiplayer options
 - More CSS styling
