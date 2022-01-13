@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,15 +7,12 @@
     <script src="js/jquery.js"></script>
     <script src="js/main.js" defer></script>
     <title>Tic Tac Toe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Tic Tac Toe</h1>
-    <div class="win-counter">
-        <p id="player1-wins">[X] wins: 0</p>
-        <p id="player2-wins">[O] wins: 0</p>
-    </div>
+    <h1 id="gameheader">Tic Tac Toe</h1>
     <div id="game-container">       
-        <div id="board">
+        <div id="board"> 
             <div class="square" id="0"></div>
             <div class="square" id="1"></div>
             <div class="square" id="2"></div>
@@ -28,21 +24,32 @@
             <div class="square" id="8"></div>
         </div> 
     </div>
-    
-    <div id="new-game-modal" class="modal">
-        <div class="modal-content">
-            <h1 id="game-result"></h1>
-            <p>Would you like to play a new game?</p>
-            <button id="new-game-yes">Yes</button>
-            <button id="new-game-no">No</button>
-        </div>   
+    <div id="currenplayer"></div>
+    <div class="win-counter">
+        <p id="player1-wins">[X] wins: 0</p>
+        <p id="draw">Draws: 0</p>
+        <p id="player2-wins">[O] wins: 0</p>
     </div>
     <div class="game-options">
         <button id="new-game">New Game</button>
-        <button id="play-human">Play Human</button>
-        <button id="play-computer">Play Computer</button>
-        <button id="reset-game">Reset Scores</button>
-        <button id="restore">Restore Previous Session</button>
+        <button id="reset-game">Reset Scores</button>        
+    </div>
+    <div id="win-modal" class="modal">
+        <div class="win-modal-content">
+            <span class="close">&times;</span>
+            <h1 id="game-result"></h1>
+            <p>Would you like to play a new game?</p>
+            <button id="play-human">Play against Human</button>
+            <button id="play-computer">Play against Computer</button>
+        </div>   
+    </div>
+    <div id="restore-modal" class="modal">
+        <div class="restore-modal-content">
+            <span class="close">&times;</span>
+            <p>Would you like to restore previous session?</p>
+            <button id="restore">Restore Previous Session</button>
+            <button id="no">No Thanks</button>
+        </div>
     </div>
 </body>
 </html>
