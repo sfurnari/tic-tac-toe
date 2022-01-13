@@ -1,27 +1,20 @@
-console.log('js loaded')
-
 
 let liveGame = true;
 let cpuGame = false;
-let currentGame = ['', '', '', '', '', '', '', '', '']
+let currentGame = ['', '', '', '', '', '', '', '', ''];
 
 const winConditions = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+    [0, 4, 8], [2, 4, 6]             // diags
 ];
 
-const player1 = 'x';
-const player2 = 'o';
+const player1 = 'X';
+const player2 = 'O';
 let currentPlayer = player1;
 let player1Wins = 0;
 let player2Wins = 0;
-let drawCounter = 0
+let drawCounter = 0;
 
 
 const cpuChooses = function(){
@@ -30,20 +23,23 @@ const cpuChooses = function(){
         const randomNum = Math.floor(Math.random() * currentGame.length);
         if (currentGame[randomNum] === ''){
             currentGame[randomNum] = player2;
-            $(`#${randomNum}`).text('o');
+            $(`#${randomNum}`).text('O');
             winCheck();
             currentPlayer = player1    
         } else {
             cpuChooses();
         };
     }
+    $('#currentplayer').text('Current player is:  X')
 }; // cpuChooses() - dumb random ai
 
 const playerChange = function(){
     if(currentPlayer === player1){
         currentPlayer = player2;
+        $('#currentplayer').text(`Current player is: ${currentPlayer}`)
     } else {
         currentPlayer = player1;
+        $('#currentplayer').text(`Current player is: ${currentPlayer}`)
     }
 }; // playerChange() - changes player after turn made
 
@@ -92,6 +88,7 @@ const newGame = function(){
     currentPlayer = player1;
     currentGame = ['', '', '', '', '', '', '', '', ''];
     $('*.square').text('');
+    $('#currentplayer').text('Current player is: X');
 }; // newGame() - sets game to turn 1
 
 const resetGame = function(){
@@ -138,6 +135,8 @@ const restoreLocalData = function(){
 
     currentPlayer = localStorage.getItem('currentPlayer');
 
+    $('#currentplayer').text(`Current player is: ${currentPlayer}`)
+
     for (let i = 0; i < currentGame.length; i++) {
         $(`#${i}`).text(currentGame[i])   
     } 
@@ -146,12 +145,12 @@ const restoreLocalData = function(){
 const restoreModal = function(){
     $('#restore-modal').css('display', 'block');
     $('.modal-content').css('display', 'block');
-};
+}; // restoreModal - opens modal on restore
 
 const openWinModal = function(){
     $('#win-modal').css('display', 'block');
     $('.win-modal-content').css('display', 'block');
-};
+}; // openWinModal - opens modal on win
 
 $('.square').on('click', function(e){
     const id = e.target.id;
@@ -163,23 +162,22 @@ $('.square').on('click', function(e){
             if ($(`#${id}`).text() != ''){ // has square already been clicked?
                 validTurn = false
             }
-
-            if (currentPlayer === player1){ // players turn input
-                $(`#${id}`).text('x');          
-            } else {
-                $(`#${id}`).text('o')     
+            if (validTurn){
+                if (currentPlayer === player1){ // players turn input
+                    $(`#${id}`).text('X');          
+                } else {
+                    $(`#${id}`).text('O');  
             }
             currentGame[idNum] = currentPlayer;
-            if (validTurn){
                 winCheck();
                 playerChange();
-            } 
+            }
         }
     }
     if (cpuGame){
         playGame();
         if (validTurn){
-            cpuChooses();
+            setTimeout(cpuChooses, 600);
         }
 
     } else {
@@ -192,17 +190,17 @@ $('#new-game').on('click', function(){
     $('#game-result').css('display', 'none')
     openWinModal();
 
-}); // main menu new game
+}); // main new game button
 
 $('#no').on('click', function(){
     closeModal();
     localStorage.clear();
-}); // modal no button
+}); // restore session no button
 
 $('#reset-game').on('click', function(){
     resetGame()
     localStorage.clear()
-}); // reset button
+}); // reset button - clears everything
 
 $('#play-human').on('click', function(){
     newGame();
@@ -210,21 +208,21 @@ $('#play-human').on('click', function(){
     closeModal();
 }); // play human button
 
-$('#play-computer').on('click', function(){
+$('.play-computer').on('click', function(){
     newGame();
     cpuGame = true;
     closeModal();
-});// play computer button
+}); // play computer button
 
 $('#restore').on('click', function(){
     restoreLocalData();
     closeModal();
-});
+}); // restore session
 
 $('.close').on('click', function(){
     closeModal()
-});
+}); // "x" close button
 
 if (localStorage.length != 0){
     $('window').on('load', restoreModal());
-}
+};
