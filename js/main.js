@@ -225,4 +225,4 @@ $('.close').on('click', function(){
 
 if (localStorage.length != 0){
     $('window').on('load', restoreModal());
-};
+}; // if local storage is empty, dont prompt on reload

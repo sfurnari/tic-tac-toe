@@ -112,6 +112,10 @@ h1 {
     width: 40%;
 }
 
+.modal button {
+    margin: auto 20px;
+}
+
 .close {
     color: white;
     float: right;
@@ -122,4 +126,47 @@ h1 {
 
 .close:hover {
     cursor: pointer;
+}
+
+@media screen and (max-height: 900px), (max-width: 650px){
+    #board {
+        width: 450px;
+        height: 450px;
+    }
+}
+@media screen and (max-width: 450px){
+    #board {
+        width: 360px;
+        height: 360px;
+    }
+    h1 {
+        font-size: 30px;
+    }
+    #game-header{
+        font-size: 40px;
+    }
+    .win-counter {
+        font-size: 100%;
+    }  
+    .win-counter p {
+        margin: 15px 20px;
+    }
+    .square {
+        font-size: 74px;
+    }
+    .win-modal-content {
+        text-align: center;
+        padding-bottom: 2%;
+        margin: 50% auto;
+        width: 70%;
+    }
+    .restore-modal-content {
+        text-align: center;
+        padding-bottom: 2%;
+        margin: 50% auto;
+        width: 70%;
+    }
+    .modal button {
+        margin: 10px 0px 10px 0px;
+    }
 }
